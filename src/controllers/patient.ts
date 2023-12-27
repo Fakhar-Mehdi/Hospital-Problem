@@ -7,8 +7,8 @@ import {
   validatePatient,
 } from "helper";
 import asyncHandler from "middleware/asyncHandler";
+import Appointment from "models/appointment";
 import Patient from "models/patient";
-
 
 export const getOneField = asyncHandler(async (req: Request, res: Response) => {
   const { _id, field } = req.params;
@@ -67,7 +67,14 @@ export const deleteOnePatient = asyncHandler(
     const patient = await Patient.findByIdAndDelete(_id);
     if (!patient) throwException(res, "Patient Not Found", 404);
     //Delete Corresponding Appointments as well
-    sendAndLog(res, `Deleted this ${patient}`);
+    const delAppointments = await Appointment.deleteMany({ pId: _id });
+    if (!delAppointments) throwException(res);
+    sendAndLog(
+      res,
+      `Deleted this ${patient}\nand also deleted the appointments\n${JSON.stringify(
+        delAppointments
+      )}`
+    );
   }
 );
 

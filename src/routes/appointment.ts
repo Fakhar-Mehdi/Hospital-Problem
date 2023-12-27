@@ -1,11 +1,11 @@
-import { addAppointment, getAllAppointment } from "controllers/appointment";
+import { addAppointment, getAppointments, getUnpaidAppointments } from "controllers/appointment";
 import express from "express";
 
 const appointmentRouter = express.Router();
 
 appointmentRouter.route("/").post(addAppointment);
-appointmentRouter.route("/").get(getAllAppointment);
-// appointmentRouter.route("/:pId?").get(getAppointmentsForPatient);
+appointmentRouter.route("/").get(getAppointments);
+appointmentRouter.route("/unpaid").get(getUnpaidAppointments);
 
-//pay fee
+//TBS pay fee
 export default appointmentRouter;

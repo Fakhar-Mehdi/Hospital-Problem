@@ -66,9 +66,22 @@ export const validateAppointment = async (appointment: any) => {
   );
 };
 
-export const getAppointmentsForPatient = (res: Response, pId: any) => {
-  const appointments = Appointment.find({ pId });
+export const getAppointmentsForPatient = async (res: Response, pId: any) => {
+  const appointments = await Appointment.find({ pId }).select({
+    _id: 0,
+    pId: 0,
+  });
   if (isEmpty(appointments))
     res.status(404).send(logger("No Appointments Found"));
   else sendAndLog(res, `Got All\n${appointments}`);
+};
+
+export const getAppointmentsForDay = async (res: Response, date: Date) => {
+  const appointments = await Appointment.find({ date }).select({
+    _id: 0,
+    pId: 0,
+  });
+  isEmpty(appointments)
+    ? res.status(404).send(logger(`No Appointments found for day: ${date}`))
+    : sendAndLog(res, `Got ${appointments}`);
 };
