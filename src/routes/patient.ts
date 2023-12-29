@@ -9,14 +9,23 @@ import {
   getTotalDues,
   updatePatientDetails,
 } from "controllers/patient";
+import asyncHandler from "middleware/asyncHandler";
 
 const patientRouter = express.Router();
 
-patientRouter.route("/:_id/:field").get(getOneField);
-patientRouter.route("/").post(addPatient).get(getAllPatients);
-patientRouter.route("/balance").get(getTotalBalance);
-patientRouter.route("/dues").get(getTotalDues);
-patientRouter.route("/:_id").delete(deleteOnePatient);
-patientRouter.route("/:_id").get(getPatientById);
-patientRouter.route("/:_id").put(updatePatientDetails);
+patientRouter.route("/:_id/:field").get(asyncHandler(getOneField));
+patientRouter
+  .route("/")
+  .post(asyncHandler(addPatient))
+  .get(asyncHandler(getAllPatients));
+patientRouter.route("/balance").get(asyncHandler(getTotalBalance));
+patientRouter.route("/dues").get(asyncHandler(getTotalDues));
+patientRouter
+  .route("/:_id")
+  .delete(asyncHandler(deleteOnePatient))
+  .get(asyncHandler(getPatientById))
+  .put(asyncHandler(updatePatientDetails));
+  
+// patientRouter.route("/:_id").get(getPatientById);
+// patientRouter.route("/:_id").put(updatePatientDetails);
 export default patientRouter;

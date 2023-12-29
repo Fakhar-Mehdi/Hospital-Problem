@@ -1,22 +1,29 @@
 import winston from "winston";
 import w from "winston-mongodb";
+import {
+  exceptionsLogFileName,
+  logFileName,
+  rejectionsFogFileName,
+} from "services/logger/data";
+import { DB } from "services/db/data";
 
 const configureLogger = () => {
   winston.configure({
-    transports: [ new w.MongoDB({db:"mongodb://localhost/hospital"}),
+    transports: [
+      new w.MongoDB({ db: DB.CONNECTION_STRING }),
       new winston.transports.Console({
         handleExceptions: true,
         handleRejections: true,
       }),
       new winston.transports.File({
-        filename: "hospital.logger",
+        filename: logFileName,
       }),
       new winston.transports.File({
-        filename: "hospital-unhandledExceptions.logger",
+        filename: exceptionsLogFileName,
         handleExceptions: true,
       }),
       new winston.transports.File({
-        filename: "hospital-unhandledRejections.logger",
+        filename: rejectionsFogFileName,
         handleRejections: true,
       }),
     ],

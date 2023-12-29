@@ -7,7 +7,6 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
     min: 1,
     max: 24,
-    //validation sTime<eTime
   },
   desc: {
     type: String,
@@ -29,6 +28,11 @@ const appointmentSchema = new mongoose.Schema({
   },
   date: { type: Date, default: Date.now },
   isFeePaid: { type: Boolean, default: false },
+  currency: {
+    type: String,
+    enum: ["USD", "EUR", "BTC"],
+    required: true,
+  },
 });
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);

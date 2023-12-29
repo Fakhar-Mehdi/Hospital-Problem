@@ -1,11 +1,24 @@
 import express from "express";
 import dotenv from "dotenv";
-import configureLogger from "startup/logger";
-import subscribeRouters from "startup/routes";
-import connectAndListen from "startup/db";
+import connectAndListen from "services/db";
+import configureLogger from "services/logger";
+import error from "middleware/error";
+import patientRouter from "routes/patient";
+import { ROUTES } from "helper/enums";
+import appointmentRouter from "routes/appointment";
+import hospitalRouter from "routes/hospital";
 
 configureLogger();
 dotenv.config();
 const app = express();
-subscribeRouters(app);
+
+app.use(express.json());
+//all the routers
+app.use(ROUTES.PATIENT_PATH, patientRouter);
+app.use(ROUTES.APPOINTMENT_PATH, appointmentRouter);
+app.use(ROUTES.HOSPITAL_PATH, hospitalRouter);
+
+//error middleware
+app.use(error);
+
 connectAndListen(app);
