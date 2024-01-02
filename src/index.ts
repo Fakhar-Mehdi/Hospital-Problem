@@ -7,6 +7,7 @@ import patientRouter from "routes/patient";
 import appointmentRouter from "routes/appointment";
 import hospitalRouter from "routes/hospital";
 import { ROUTES } from "helper/enums";
+import { makeAppProdReady } from "./helper";
 
 configureLogger();
 dotenv.config();
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use(ROUTES.PATIENT_PATH, patientRouter);
 app.use(ROUTES.APPOINTMENT_PATH, appointmentRouter);
 app.use(ROUTES.HOSPITAL_PATH, hospitalRouter);
+
+makeAppProdReady(app);
 
 //error middleware
 app.use(error);

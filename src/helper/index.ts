@@ -6,6 +6,8 @@ import { isEmpty } from "lodash";
 import winston from "winston";
 import Appointment from "models/appointment";
 import { SERVER } from "data";
+import helmet from "helmet";
+import compression from "compression";
 
 export const validatePatient = async (patient: any) => {
   const patientSchema = object({
@@ -118,6 +120,12 @@ export const throwForNoExistence = (
       code || SERVER.ERROR_CODE
     );
   return;
+};
+export const makeAppProdReady = (app: any) => {
+  if (process.env.environment === "prod") {
+    app.use(helmet);
+    app.use(compression);
+  }
 };
 
 // if (element instanceof Array) return element && element.length ? true : false;
