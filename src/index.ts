@@ -4,9 +4,9 @@ import connectAndListen from "services/db";
 import configureLogger from "services/logger";
 import error from "middleware/error";
 import patientRouter from "routes/patient";
-import { ROUTES } from "helper/enums";
 import appointmentRouter from "routes/appointment";
 import hospitalRouter from "routes/hospital";
+import { ROUTES } from "helper/enums";
 
 configureLogger();
 dotenv.config();
@@ -21,4 +21,6 @@ app.use(ROUTES.HOSPITAL_PATH, hospitalRouter);
 //error middleware
 app.use(error);
 
-connectAndListen(app);
+const server = connectAndListen(app);
+
+export default server;

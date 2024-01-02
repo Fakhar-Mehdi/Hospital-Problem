@@ -47,7 +47,7 @@ const patientSchema = new mongoose.Schema({
   currency: {
     type: String,
     enum: ["USD", "EUR", "BTC"],
-    required: true,
+    default: "USD",
   },
   appointmentCount: {
     type: Number,

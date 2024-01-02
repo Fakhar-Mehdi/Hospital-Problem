@@ -17,9 +17,9 @@ import Patient from "models/patient";
 export const addAppointment = async (req: Request, res: Response) => {
   //TBS check if the date is in Past?
   if (req.body.date) req.body.date = new Date(req.body.date);
-  req.body.currency = "USD"; // dummy data to pass validation
-  if (!(await validateAppointment(req.body)))
-    throwException(res, "Invalid Data", 400);
+  await validateAppointment(res, req.body);
+  res.status(200);
+
   //get patient and do updates
   const patient: any = await Patient.findById(req.body.pId);
   throwForNoExistence(res, patient, "No Patient Found against the pId", 404);
@@ -28,8 +28,8 @@ export const addAppointment = async (req: Request, res: Response) => {
   else patient.billRemaining += req.body.fee;
   patient.appointmentCount++;
   await patient.save();
-  if (!(await validateAppointment(req.body)))
-    throwException(res, "Invalid Data", 400);
+  await validateAppointment(res, req.body);
+  res.status(200);
   const appointment = new Appointment(req.body);
   await appointment.save();
   sendAndLog(res, `Created ${appointment}`);
@@ -147,6 +147,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
   appointment.fee = fee || appointment.fee;
   appointment.date = new Date(date) || appointment.date;
 
-  await validateAppointment(appointment);
+  await validateAppointment(res, appointment);
+  res.status(200);
   await appointment.save();
 };

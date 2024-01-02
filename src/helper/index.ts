@@ -14,15 +14,15 @@ export const validatePatient = async (patient: any) => {
     ownerAddress: string().required().trim().min(3).max(200),
     ownerPhone: string().required().trim().min(11).max(15),
     noOfLegs: mixed<NO_OF_LEGS>().oneOf(Object.values(NO_OF_LEGS)).required(),
-    currency: mixed<CURRENCY>().oneOf(Object.values(CURRENCY)).required(),
+    currency: mixed<CURRENCY>().oneOf(Object.values(CURRENCY)),
   });
   return await patientSchema.validate(patient, { strict: true });
 };
 
 export const validateObjectId = (res: Response, id: any) => {
   // if (!id) throw new Error("Id not Found");
-  throwForNoExistence(res, id, "Id Not Found", 400);
-  throwForNoExistence(res, isValidObjectId(id), "Invalid Id", 404);
+  throwForNoExistence(res, id, "Input Not Found", 400);
+  throwForNoExistence(res, isValidObjectId(id), "Invalid Input", 404);
 
   // if (!isValidObjectId(id)) throwException(res, "Invalid Id", 400);
   return true;
@@ -53,7 +53,7 @@ export const sendAndLog = (res: Response, message: string) => {
   res.send(logger(message));
 };
 
-export const validateAppointment = async (appointment: any) => {
+export const validateAppointment = (res: Response, appointment: any) => {
   const appointmentSchema = object({
     sTime: number().required().min(0).max(23),
     eTime: number().required().min(1).max(24),
@@ -62,16 +62,20 @@ export const validateAppointment = async (appointment: any) => {
     pId: string().min(24).max(24),
     date: date(),
     isFeePaid: boolean(),
-    currency: mixed<CURRENCY>().oneOf(Object.values(CURRENCY)).required(),
+    currency: mixed<CURRENCY>().oneOf(Object.values(CURRENCY)),
   });
   //implement This
   // if (appointment.sTime >= appointment.eTime)
   //   throw new Error("Appointment MUST be started before its ended");
+  res.status(400);
   throwOnlyError(
     !(appointment.sTime >= appointment.eTime),
     "Appointment MUST be started before its ended"
   );
-  return await appointmentSchema.validate(appointment), { strict: true };
+
+  return appointmentSchema.validate(appointment, {
+    strict: true,
+  });
 };
 
 export const throwOnlyError = (element: any, message?: string) => {

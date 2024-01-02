@@ -31,7 +31,7 @@ const appointmentSchema = new mongoose.Schema({
   currency: {
     type: String,
     enum: ["USD", "EUR", "BTC"],
-    required: true,
+    default: "USD",
   },
 });
 

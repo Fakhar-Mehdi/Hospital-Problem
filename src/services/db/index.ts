@@ -16,7 +16,7 @@ const connectToMongoDb = async () => {
 const connectAndListen = async (app: Express) => {
   await connectToMongoDb();
   const port = process.env.PORT || 3000;
-  app.listen(port, () => winston.info(`${SERVER.PORT_LISTEN_SUCCESS}${port}`));
+  return app.listen(port, () => winston.info(`${SERVER.PORT_LISTEN_SUCCESS}${port}`));
 };
 
 export default connectAndListen;

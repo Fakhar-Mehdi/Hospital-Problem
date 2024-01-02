@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { checkExistence, sendAndLog } from "helper";
+import { checkExistence, sendAndLog, throwForNoExistence } from "helper";
 import Appointment from "models/appointment";
+import Patient from "models/patient";
 
 const getDaysBeforeDate = (days: number) => {
   return days ? new Date(Date.now() - days * 24 * 60 * 60 * 1000) : new Date();
@@ -41,4 +42,16 @@ const getPreviousRecord = async (days: number, res: Response) => {
     res,
     `Got ${appointments.length} Appointment in the last ${days} days\nBalance: ${balance}\nUnpaid: ${unpaid}`
   );
+};
+
+export const getMostPopularPet = async (req: Request, res: Response) => {
+  const popularPet = await Patient.find()
+    .sort({ appointmentCount: -1 })
+    .limit(1)
+    .select({
+      _id: 0,
+      __v: 0,
+    });
+  throwForNoExistence(res, popularPet);
+  res.send(popularPet);
 };

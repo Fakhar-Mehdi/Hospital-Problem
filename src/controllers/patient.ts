@@ -44,6 +44,19 @@ export const addPatient = async (req: Request, res: Response) => {
 export const getAllPatients = async (req: Request, res: Response) => {
   await getAll(Patient, res, "Patient");
 };
+export const getPatientDetails = async (req: Request, res: Response) => {
+  const patients = await Patient.find().select({
+    _id: 0,
+    __v: 0,
+    noOfLegs: 0,
+    ownerName: 0,
+    ownerAddress: 0,
+    ownerPhone: 0,
+  });
+
+  throwForNoExistence(res, patients);
+  res.send(patients);
+};
 
 export const getTotalBalance = async (req: Request, res: Response) => {
   const allPaidBills = await Patient.find().select({ billPaid: 1, _id: 0 });
