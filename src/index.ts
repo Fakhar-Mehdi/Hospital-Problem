@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectAndListen, { connectToMongoDb } from "services/db";
+import connectAndListen from "services/db";
 import configureLogger from "services/logger";
 import error from "middleware/error";
 import patientRouter from "routes/patient";
@@ -8,8 +8,9 @@ import appointmentRouter from "routes/appointment";
 import hospitalRouter from "routes/hospital";
 import { ROUTES } from "helper/enums";
 import { makeAppProdReady } from "./helper";
-import winston from "winston";
+// import winston from "winston";
 import { SERVER } from "data";
+import homeRouter from "routes/home";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(ROUTES.PATIENT_PATH, patientRouter);
 app.use(ROUTES.APPOINTMENT_PATH, appointmentRouter);
 app.use(ROUTES.HOSPITAL_PATH, hospitalRouter);
+app.use(ROUTES.HOME_PATH, homeRouter);
 
 makeAppProdReady(app);
 
