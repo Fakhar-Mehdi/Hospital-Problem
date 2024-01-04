@@ -1,0 +1,28 @@
+# Node.js
+node_modules/
+package-lock.json
+
+#Jest
+coverage/
+
+# TypeScript
+*.js
+*.js.map
+*.tsbuildinfo
+
+# Build output directory
+dist/
+
+# Config files
+tsconfig.json
+
+# Dependency directories
+npm-debug.log
+
+.env
+
+hospital plan 1.txt
+hospital plan 2.txt
+hospital-unhandledRejections.logger
+hospital-unhandledExceptions.logger
+hospital.logger
