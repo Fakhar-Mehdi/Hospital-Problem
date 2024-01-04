@@ -49,7 +49,6 @@ export const getMostPopularPet = async (req: Request, res: Response) => {
     .sort({ appointmentCount: -1 })
     .limit(1)
     .select({
-      _id: 0,
       __v: 0,
     });
   throwForNoExistence(res, popularPet);

@@ -8,6 +8,12 @@ import Appointment from "models/appointment";
 import { SERVER } from "data";
 import helmet from "helmet";
 import compression from "compression";
+import { DB } from "services/db/data";
+
+export const getConnectionString = () => {
+  if (process.env.env === "test") return DB.CONNECTION_STRING + "test";
+  return DB.CONNECTION_STRING;
+};
 
 export const validatePatient = async (patient: any) => {
   const patientSchema = object({
@@ -95,10 +101,7 @@ export const getAppointmentsForPatient = async (res: Response, pId: any) => {
 };
 
 export const getAppointmentsForDay = async (res: Response, date: Date) => {
-  const appointments = await Appointment.find({ date }).select({
-    _id: 0,
-    pId: 0,
-  });
+  const appointments = await Appointment.find({ date });
   isEmpty(appointments)
     ? res.status(404).send(logger(`No Appointments found for day: ${date}`))
     : sendAndLog(res, `Got ${appointments}`);

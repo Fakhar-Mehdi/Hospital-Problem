@@ -5,12 +5,12 @@ import {
   logFileName,
   rejectionsFogFileName,
 } from "services/logger/data";
-import { DB } from "services/db/data";
+import { getConnectionString } from "helper/index";
 
 const configureLogger = () => {
   winston.configure({
     transports: [
-      new w.MongoDB({ db: DB.CONNECTION_STRING }),
+      new w.MongoDB({ db: getConnectionString() }),
       new winston.transports.Console({
         handleExceptions: true,
         handleRejections: true,

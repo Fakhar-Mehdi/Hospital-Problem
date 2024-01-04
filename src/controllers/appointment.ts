@@ -24,9 +24,11 @@ export const addAppointment = async (req: Request, res: Response) => {
   const patient: any = await Patient.findById(req.body.pId);
   throwForNoExistence(res, patient, "No Patient Found against the pId", 404);
   req.body.currency = patient.currency;
-  if (req.body.isFeePaid) patient.billPaid += req.body.fee;
-  else patient.billRemaining += req.body.fee;
-  patient.appointmentCount++;
+  if (req.body.isFeePaid)
+    patient.billPaid = req.body.fee + (patient.billPaid || 0);
+  else patient.billRemaining = req.body.fee + (patient.billRemaining || 0);
+  patient.appointmentCount = 1 + (patient.appointmentCount || 0);
+
   await patient.save();
   await validateAppointment(res, req.body);
   res.status(200);
@@ -76,8 +78,8 @@ export const deleteOneAppointment = async (req: Request, res: Response) => {
     await patient.save();
   }
   //delete appointment
-  // appointment = await Appointment.findByIdAndDelete(_id);
-  await appointment.remove();
+  appointment = await Appointment.findByIdAndDelete(_id);
+  // await appointment.remove();
 
   sendAndLog(res, `Deleted ${appointment}`);
 };
