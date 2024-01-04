@@ -10,10 +10,10 @@ import helmet from "helmet";
 import compression from "compression";
 import { DB } from "services/db/data";
 
-export const getConnectionString = () => {
-  if (process.env.env === "test") return DB.CONNECTION_STRING + "test";
-  return DB.CONNECTION_STRING;
-};
+// export const getConnectionString = () => {
+//   if (process.env.env === "test") return DB.CONNECTION_STRING + "test";
+//   return DB.CONNECTION_STRING;
+// };
 
 export const validatePatient = async (patient: any) => {
   const patientSchema = object({
@@ -132,10 +132,10 @@ export const throwForNoExistence = (
   return;
 };
 export const makeAppProdReady = (app: any) => {
-  if (process.env.environment === "prod") {
-    app.use(helmet());
-    app.use(compression);
-  }
+  // if (process.env.environment === "prod") {
+  app.use(helmet());
+  app.use(compression);
+  // }
 };
 
 // if (element instanceof Array) return element && element.length ? true : false;

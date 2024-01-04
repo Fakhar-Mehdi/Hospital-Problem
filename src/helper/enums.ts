@@ -2,6 +2,7 @@ export enum ROUTES {
   PATIENT_PATH = "/api/patient",
   APPOINTMENT_PATH = "/api/appointment",
   HOSPITAL_PATH = "/api/hospital",
+  HOME_PATH = "/",
 }
 
 export enum NO_OF_LEGS {
