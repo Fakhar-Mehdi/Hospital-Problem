@@ -19,7 +19,6 @@ patientRouter
   .route("/")
   .post(asyncHandler(addPatient))
   .get(asyncHandler(getAllPatients));
-patientRouter.route("/balance").get(asyncHandler(getTotalBalance));
 patientRouter.route("/dues").get(asyncHandler(getTotalDues));
 patientRouter.route("/details").get(asyncHandler(getPatientDetails));
 patientRouter

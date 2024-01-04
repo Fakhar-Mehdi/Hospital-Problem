@@ -4,6 +4,7 @@ import Patient from "models/patient";
 import { validatePatient } from "helper/index";
 import { isEmpty } from "lodash";
 import mongoose from "mongoose";
+import { addPatient } from "controllers/patient";
 
 let patient: any;
 let patientData = {
@@ -27,6 +28,42 @@ describe("add dummy data", () => {
     await patient.save();
     const res = await Patient.findById(patient._id);
     expect(JSON.stringify(res)).toContain(patient._id.toString());
+  });
+});
+
+// describe("Unit Test for addPatient", () => {});
+
+describe("Unit Test of addPatient", () => {
+  afterAll(async () => {
+    await (await server).close();
+  });
+
+  let req: any = {
+    body: {
+      name: "john",
+      ownerName: "bob",
+      ownerAddress: "lhr",
+      ownerPhone: "123456789123",
+      noOfLegs: "4",
+      currency: "USD",
+    },
+  };
+
+  let status: number = 0;
+
+  let received: string = "";
+  let res: any = {
+    status: (n: number) => {
+      status = n;
+    },
+    send: (response: any) => {
+      received = response;
+    },
+  };
+
+  it("should check if patient is created or not", async () => {
+    await addPatient(req, res);
+    expect(received).toContain("Created");
   });
 });
 

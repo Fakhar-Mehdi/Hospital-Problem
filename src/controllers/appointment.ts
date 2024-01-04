@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   getAll,
+  getAppointment,
   getAppointmentsForDay,
   getAppointmentsForPatient,
   logger,
@@ -41,6 +42,8 @@ export const getAppointments = async (req: Request, res: Response) => {
   if (req.query.pId) return await getAppointmentsForPatient(res, req.query.pId);
   else if (req.query.day)
     return await getAppointmentsForDay(res, new Date(req.query.day as string));
+  else if (req.query._id)
+    return await getAppointment(res, req.query._id as string);
   else await getAll(Appointment, res, "Appointments");
 };
 
@@ -93,7 +96,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
   // if (!appointment) throwException(res, "Appointment Not Found", 404);
   throwForNoExistence(res, appointment, "Appointment Not Found", 404);
 
-  if (pId) {
+  if (pId && appointment.pId.toString() !== pId) {
     validateObjectId(res, pId);
     throwForNoExistence(
       res,
@@ -106,8 +109,10 @@ export const updateAppointment = async (req: Request, res: Response) => {
     throwForNoExistence(res, patient, "Patient Not Found", 404);
 
     if (patient) {
-      if (isFeePaid) patient.billPaid = patient?.billPaid + fee;
-      else patient.billRemaining = patient?.billRemaining + fee;
+      if (isFeePaid)
+        patient.billPaid = patient?.billPaid + fee || appointment.fee;
+      else
+        patient.billRemaining = patient?.billRemaining + fee || appointment.fee;
       patient.appointmentCount++;
       appointment.currency = patient.currency;
       await patient.save();
@@ -116,7 +121,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
     patient = await Patient.findById(appointment.pId);
     if (patient) {
       patient.billRemaining = patient?.billRemaining - appointment.fee;
-      patient.appointmentCount--;
+      patient.appointmentCount = -1 + patient.appointmentCount;
       await patient.save();
     }
     appointment.pId = pId;
@@ -126,12 +131,14 @@ export const updateAppointment = async (req: Request, res: Response) => {
   } else if (
     typeof isFeePaid === "boolean" &&
     !isFeePaid &&
+    !fee &&
     appointment.isFeePaid
   )
     throwException(res, "Cannot Refund the Fee");
   else if (
     typeof isFeePaid === "boolean" &&
     isFeePaid &&
+    !fee &&
     !appointment.isFeePaid
   ) {
     const patient = await Patient.findById(appointment.pId);
@@ -147,9 +154,11 @@ export const updateAppointment = async (req: Request, res: Response) => {
   appointment.eTime = eTime || appointment.eTime;
   appointment.desc = desc || appointment.desc;
   appointment.fee = fee || appointment.fee;
+  appointment.isFeePaid = isFeePaid || false;
   appointment.date = new Date(date) || appointment.date;
 
   await validateAppointment(res, appointment);
   res.status(200);
   await appointment.save();
+  sendAndLog(res, `Updated: ${appointment}`);
 };

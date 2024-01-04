@@ -38,7 +38,7 @@ export const addPatient = async (req: Request, res: Response) => {
 
   const patient = new Patient(result);
   const saved = await patient.save();
-  sendAndLog(res, `New Patient Added ${saved}`);
+  sendAndLog(res, `New Patient Created ${saved}`);
 };
 
 export const getAllPatients = async (req: Request, res: Response) => {

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && jest --watchAll --verbose --runInBand",
+    "test": "tsc && jest --runInBand --watchAll --verbose",
     "start": "tsc && node dist/index.js",
     "nodemon": "tsc && nodemon ./dist/index.js"
   },

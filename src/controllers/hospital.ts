@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { checkExistence, sendAndLog, throwForNoExistence } from "helper";
+import { isEmpty } from "lodash";
 import Appointment from "models/appointment";
 import Patient from "models/patient";
 
@@ -51,6 +52,7 @@ export const getMostPopularPet = async (req: Request, res: Response) => {
     .select({
       __v: 0,
     });
-  throwForNoExistence(res, popularPet);
-  res.send(popularPet);
+  return checkExistence(res)
+    ? res.status(404).send("No Popular Patient till now")
+    : res.send(popularPet);
 };

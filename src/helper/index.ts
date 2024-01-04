@@ -97,7 +97,7 @@ export const getAppointmentsForPatient = async (res: Response, pId: any) => {
   });
   if (isEmpty(appointments))
     res.status(404).send(logger("No Appointments Found"));
-  else sendAndLog(res, `Got All\n${appointments}`);
+  else sendAndLog(res, `Got this\n${appointments}`);
 };
 
 export const getAppointmentsForDay = async (res: Response, date: Date) => {
@@ -105,6 +105,13 @@ export const getAppointmentsForDay = async (res: Response, date: Date) => {
   isEmpty(appointments)
     ? res.status(404).send(logger(`No Appointments found for day: ${date}`))
     : sendAndLog(res, `Got ${appointments}`);
+};
+
+export const getAppointment = async (res: Response, _id: string) => {
+  const appointment = await Appointment.findById({ _id });
+  isEmpty(appointment)
+    ? res.status(404).send(logger(`No Appointment found for this id: ${_id}`))
+    : sendAndLog(res, `Got ${appointment}`);
 };
 
 export const checkExistence = (element: any[] | any) =>
@@ -126,7 +133,7 @@ export const throwForNoExistence = (
 };
 export const makeAppProdReady = (app: any) => {
   if (process.env.environment === "prod") {
-    app.use(helmet);
+    app.use(helmet());
     app.use(compression);
   }
 };

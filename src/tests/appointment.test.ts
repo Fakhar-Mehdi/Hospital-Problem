@@ -4,6 +4,7 @@ import Patient from "models/patient";
 import Appointment from "models/appointment";
 import { validatePatient } from "helper/index";
 import { isEmpty } from "lodash";
+import { addAppointment } from "controllers/appointment";
 
 let payload: {
   sTime?: number;
@@ -193,6 +194,51 @@ describe("get appointments", () => {
       .query({ day: "1/1/24" });
 
     expect(JSON.stringify(res)).toContain(appointment._id.toString());
+  });
+});
+
+describe("Unit Test of addAppointment", () => {
+  afterAll(async () => {
+    await (await server).close();
+  });
+
+  let req: any = {
+    body: {
+      sTime: 15,
+      eTime: 17,
+      desc: "UNIT TESTING",
+      fee: 1000,
+      pId: "",
+      date: "12/15/23",
+      isFeePaid: false,
+    },
+  };
+
+  let status: number = 0;
+
+  let received: string = "";
+  let res: any = {
+    status: (n: number) => {
+      status = n;
+    },
+    send: (response: any) => {
+      received = response;
+    },
+  };
+
+  it("should check if appointment is created or not", async () => {
+    req.body.pId = patient._id.toString();
+    await addAppointment(req, res);
+    expect(status).toBe(200);
+    expect(received).toContain("Created");
+  });
+
+  it("should check if the appointmentCount is incremented or not", async () => {
+    const oldRecord = await Patient.findById(patient._id);
+    await addAppointment(req, res);
+    let newRecord = await Patient.findById(patient._id);
+    if (oldRecord)
+      expect(newRecord?.appointmentCount).toBe(oldRecord.appointmentCount + 1);
   });
 });
 
