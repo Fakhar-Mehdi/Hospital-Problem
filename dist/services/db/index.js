@@ -10,7 +10,8 @@ const data_1 = require("services/db/data");
 const data_2 = require("data");
 const connectToMongoDb = async () => {
     try {
-        await mongoose_1.default.connect(data_1.DB.CONNECTION_STRING);
+        if (process.env.CONNECTION_STRING)
+            await mongoose_1.default.connect(process.env.CONNECTION_STRING);
         winston_1.default.info(data_1.DB.SUCCESS_MESSAGE);
     }
     catch (e) {
@@ -20,7 +21,7 @@ const connectToMongoDb = async () => {
 exports.connectToMongoDb = connectToMongoDb;
 const connectAndListen = async (app) => {
     await (0, exports.connectToMongoDb)();
-    const port = 5000;
+    const port = process.env.PORT || 5000;
     return app.listen(port, () => winston_1.default.info(`${data_2.SERVER.PORT_LISTEN_SUCCESS}${port}`));
 };
 exports.default = connectAndListen;
