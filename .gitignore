@@ -6,12 +6,12 @@ package-lock.json
 coverage/
 
 # TypeScript
-*.js
+# *.js
 *.js.map
 *.tsbuildinfo
 
 # Build output directory
-dist/
+# dist/
 
 # Config files
 tsconfig.json
