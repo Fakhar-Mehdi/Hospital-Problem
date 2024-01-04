@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "tsc && jest --runInBand --watchAll --verbose",
-    "start": "tsc && node dist/index.js",
+    "start": "node dist/index.js",
     "nodemon": "tsc && nodemon ./dist/index.js"
   },
   "engines": {
