@@ -7,7 +7,8 @@ import { SERVER } from "data";
 
 export const connectToMongoDb = async () => {
   try {
-    await mongoose.connect(DB.CONNECTION_STRING);
+    if (process.env.CONNECTION_STRING)
+      await mongoose.connect(process.env.CONNECTION_STRING);
     winston.info(DB.SUCCESS_MESSAGE);
   } catch (e) {
     winston.error(`${DB.ERROR_MESSAGE}${e}`);
@@ -16,8 +17,7 @@ export const connectToMongoDb = async () => {
 
 const connectAndListen = async (app: Express) => {
   await connectToMongoDb();
-  const port = 5000;
-  // const port = process.env.PORT || 5000;
+  const port = process.env.PORT || 5000;
   return app.listen(port, () =>
     winston.info(`${SERVER.PORT_LISTEN_SUCCESS}${port}`)
   );

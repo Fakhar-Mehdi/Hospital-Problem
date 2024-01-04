@@ -8,10 +8,9 @@ import Appointment from "models/appointment";
 import { SERVER } from "data";
 import helmet from "helmet";
 import compression from "compression";
-import { DB } from "services/db/data";
 
 // export const getConnectionString = () => {
-//   if (process.env.env === "test") return DB.CONNECTION_STRING + "test";
+//   if (process.env.environment === "test") return DB.CONNECTION_STRING + "test";
 //   return DB.CONNECTION_STRING;
 // };
 
