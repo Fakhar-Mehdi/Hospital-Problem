@@ -85,7 +85,9 @@ const getAppointmentsForPatient = async (res, patientId) => {
         patientId: 0,
     });
     if ((0, lodash_1.isEmpty)(appointments))
-        res.status(404).send((0, exports.logger)("No Appointments Found"));
+        res
+            .status(404)
+            .send((0, exports.logger)("No Appointments Found for the give patientId"));
     else
         (0, exports.sendAndLog)(res, `Got this\n${appointments}`);
 };

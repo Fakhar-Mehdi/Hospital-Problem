@@ -72,7 +72,7 @@ export const deleteOneAppointment = async (req: Request, res: Response) => {
   let appointment: any = await Appointment.findById(_id);
 
   // if (!appointment) throwException(res);
-  throwForNoExistence(res, appointment);
+  throwForNoExistence(res, appointment, "Appointment not found", 404);
   throwForNoExistence(
     res,
     !appointment.isFeePaid,

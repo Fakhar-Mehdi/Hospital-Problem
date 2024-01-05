@@ -98,7 +98,9 @@ export const getAppointmentsForPatient = async (
     patientId: 0,
   });
   if (isEmpty(appointments))
-    res.status(404).send(logger("No Appointments Found"));
+    res
+      .status(404)
+      .send(logger("No Appointments Found for the give patientId"));
   else sendAndLog(res, `Got this\n${appointments}`);
 };
 
