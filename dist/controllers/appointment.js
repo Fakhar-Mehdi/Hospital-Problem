@@ -55,7 +55,7 @@ const deleteOneAppointment = async (req, res) => {
     (0, helper_1.throwForNoExistence)(res, _id, "Id Not Found", 400);
     (0, helper_1.validateObjectId)(res, _id);
     let appointment = await appointment_1.default.findById(_id);
-    (0, helper_1.throwForNoExistence)(res, appointment);
+    (0, helper_1.throwForNoExistence)(res, appointment, "Appointment not found", 403);
     (0, helper_1.throwForNoExistence)(res, !appointment.isFeePaid, "The fee is paid and the appointment will remain in our Database for record keeping purposes", 403);
     const patient = await patient_1.default.findById(appointment.patientId);
     if (patient) {
