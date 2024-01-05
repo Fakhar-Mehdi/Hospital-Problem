@@ -87,7 +87,7 @@ export const deleteOnePatient = async (req: Request, res: Response) => {
   throwForNoExistence(res, patient, "Patient Not Found", 404);
 
   //Delete Corresponding Appointments as well
-  const delAppointments = await Appointment.deleteMany({ pId: _id });
+  const delAppointments = await Appointment.deleteMany({ patientId: _id });
   if (!delAppointments) throwException(res);
   throwForNoExistence(res, delAppointments);
 

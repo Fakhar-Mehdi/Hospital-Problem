@@ -7,11 +7,11 @@ import { isEmpty } from "lodash";
 import { addAppointment } from "controllers/appointment";
 
 let payload: {
-  sTime?: number;
-  eTime?: number;
-  desc?: string;
+  startTime?: number;
+  endTime?: number;
+  description?: string;
   fee?: number;
-  pId?: string;
+  patientId?: string;
   date?: string;
   isFeePaid?: boolean;
   _id?: string;
@@ -38,11 +38,11 @@ describe("add dummy data", () => {
     patient = new Patient(await validatePatient(patientData));
     await patient.save();
     let appointmentData = {
-      sTime: 15,
-      eTime: 17,
-      desc: "fakhar",
+      startTime: 15,
+      endTime: 17,
+      description: "fakhar",
       fee: 1000,
-      pId: patient._id,
+      patientId: patient._id,
       date: new Date("1/1/24"),
       isFeePaid: false,
       currency: "USD",
@@ -71,11 +71,11 @@ describe("add appointment", () => {
   });
   beforeEach(async () => {
     payload = {
-      sTime: 15,
-      eTime: 17,
-      desc: "hello",
+      startTime: 15,
+      endTime: 17,
+      description: "hello",
       fee: 1000,
-      pId: "658eefb086933a93ec2b5da3",
+      patientId: "658eefb086933a93ec2b5da3",
       date: "10/15/23",
       isFeePaid: false,
     };
@@ -90,12 +90,12 @@ describe("add appointment", () => {
       noOfLegs: "4",
     });
     await patient.save();
-    payload.pId = patient._id;
-    const oldRecord: any = await Patient.findById(payload.pId);
+    payload.patientId = patient._id;
+    const oldRecord: any = await Patient.findById(payload.patientId);
     const result: any = await request(await server)
       .post("/api/appointment")
       .send(payload);
-    const newRecord: any = await Patient.findById(payload.pId);
+    const newRecord: any = await Patient.findById(payload.patientId);
     expect(JSON.stringify(result.text)).toContain("Created");
     expect(newRecord.appointmentCount).toBe(oldRecord.appointmentCount + 1);
   });
@@ -106,8 +106,8 @@ describe("add appointment", () => {
     //  await  (await server).close();
   });
 
-  it("should return 404 for wrong pId", async () => {
-    payload.pId = "658eefb086933a93ec2b5da5";
+  it("should return 404 for wrong patientId", async () => {
+    payload.patientId = "658eefb086933a93ec2b5da5";
     const res = await request(await server)
       .post("/api/appointment")
       .send(payload);
@@ -121,11 +121,11 @@ describe("update appointment", () => {
   });
   beforeEach(() => {
     payload = {
-      sTime: 15,
-      eTime: 17,
-      desc: "hello",
+      startTime: 15,
+      endTime: 17,
+      description: "hello",
       fee: 1000,
-      pId: "658eefc486933a93ec2b5da7",
+      patientId: "658eefc486933a93ec2b5da7",
       date: "12/15/23",
       isFeePaid: false,
       _id: "658efc26d25e29412158c74d",
@@ -140,11 +140,11 @@ describe("update appointment", () => {
     expect(result.status).toBe(400);
   });
 
-  it("should throw an error for sTime>eTime", async () => {
-    payload.sTime = 5;
-    payload.eTime = 4;
+  it("should throw an error for startTime>endTime", async () => {
+    payload.startTime = 5;
+    payload.endTime = 4;
     payload._id = appointment._id;
-    payload.pId = patient._id;
+    payload.patientId = patient._id;
 
     const result = await request(await server)
       .put("/api/appointment")
@@ -165,7 +165,7 @@ describe("update appointment", () => {
 
   it("should send 404 for wrong patientId", async () => {
     payload._id = appointment._id;
-    payload.pId = "123456789123456789123456";
+    payload.patientId = "123456789123456789123456";
 
     const result = await request(await server)
       .put("/api/appointment")
@@ -182,7 +182,7 @@ describe("get appointments", () => {
   it("should return appointments for a patient", async () => {
     const res: any = await request(await server)
       .get("/api/appointment/")
-      .query({ pId: patient._id });
+      .query({ patientId: patient._id });
     expect(res.status).toBe(200);
 
     expect(JSON.stringify(res)).toContain(patient._id.toString());
@@ -204,11 +204,11 @@ describe("Unit Test of addAppointment", () => {
 
   let req: any = {
     body: {
-      sTime: 15,
-      eTime: 17,
-      desc: "UNIT TESTING",
+      startTime: 15,
+      endTime: 17,
+      description: "UNIT TESTING",
       fee: 1000,
-      pId: "",
+      patientId: "",
       date: "12/15/23",
       isFeePaid: false,
     },
@@ -227,7 +227,7 @@ describe("Unit Test of addAppointment", () => {
   };
 
   it("should check if appointment is created or not", async () => {
-    req.body.pId = patient._id.toString();
+    req.body.patientId = patient._id.toString();
     await addAppointment(req, res);
     expect(status).toBe(200);
     expect(received).toContain("Created");

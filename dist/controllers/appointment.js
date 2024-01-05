@@ -13,8 +13,8 @@ const addAppointment = async (req, res) => {
         req.body.date = new Date(req.body.date);
     await (0, helper_1.validateAppointment)(res, req.body);
     res.status(200);
-    const patient = await patient_1.default.findById(req.body.pId);
-    (0, helper_1.throwForNoExistence)(res, patient, "No Patient Found against the pId", 404);
+    const patient = await patient_1.default.findById(req.body.patientId);
+    (0, helper_1.throwForNoExistence)(res, patient, "No Patient Found against the patientId", 404);
     req.body.currency = patient.currency;
     if (req.body.isFeePaid)
         patient.billPaid = req.body.fee + (patient.billPaid || 0);
@@ -30,8 +30,8 @@ const addAppointment = async (req, res) => {
 };
 exports.addAppointment = addAppointment;
 const getAppointments = async (req, res) => {
-    if (req.query.pId)
-        return await (0, helper_1.getAppointmentsForPatient)(res, req.query.pId);
+    if (req.query.patientId)
+        return await (0, helper_1.getAppointmentsForPatient)(res, req.query.patientId);
     else if (req.query.day)
         return await (0, helper_1.getAppointmentsForDay)(res, new Date(req.query.day));
     else if (req.query._id)
@@ -43,7 +43,7 @@ exports.getAppointments = getAppointments;
 const getUnpaidAppointments = async (req, res) => {
     const unpaidAppointments = await appointment_1.default.find({ fee: 0 }).select({
         _id: 0,
-        pId: 0,
+        patientId: 0,
     });
     (0, lodash_1.isEmpty)(unpaidAppointments)
         ? res.status(404).send((0, helper_1.logger)(`No Unpaid Appointments found`))
@@ -57,7 +57,7 @@ const deleteOneAppointment = async (req, res) => {
     let appointment = await appointment_1.default.findById(_id);
     (0, helper_1.throwForNoExistence)(res, appointment);
     (0, helper_1.throwForNoExistence)(res, !appointment.isFeePaid, "The fee is paid and the appointment will remain in our Database for record keeping purposes", 403);
-    const patient = await patient_1.default.findById(appointment.pId);
+    const patient = await patient_1.default.findById(appointment.patientId);
     if (patient) {
         patient.billRemaining = patient?.billRemaining - appointment.fee;
         patient.appointmentCount--;
@@ -68,15 +68,15 @@ const deleteOneAppointment = async (req, res) => {
 };
 exports.deleteOneAppointment = deleteOneAppointment;
 const updateAppointment = async (req, res) => {
-    const { _id, isFeePaid, pId, sTime, eTime, desc, fee, date } = req.body;
+    const { _id, isFeePaid, patientId, startTime, endTime, description, fee, date, } = req.body;
     (0, helper_1.throwForNoExistence)(res, _id, "Id Not Found", 400);
     (0, helper_1.validateObjectId)(res, _id);
     const appointment = await appointment_1.default.findById(_id);
     (0, helper_1.throwForNoExistence)(res, appointment, "Appointment Not Found", 404);
-    if (pId && appointment.pId.toString() !== pId) {
-        (0, helper_1.validateObjectId)(res, pId);
+    if (patientId && appointment.patientId.toString() !== patientId) {
+        (0, helper_1.validateObjectId)(res, patientId);
         (0, helper_1.throwForNoExistence)(res, !appointment.isFeePaid, "Cannot transfer the appointment as the Fee is Paid. Create a new Appointment for the other patient.", 403);
-        let patient = await patient_1.default.findById(pId);
+        let patient = await patient_1.default.findById(patientId);
         (0, helper_1.throwForNoExistence)(res, patient, "Patient Not Found", 404);
         if (patient) {
             if (isFeePaid)
@@ -87,13 +87,13 @@ const updateAppointment = async (req, res) => {
             appointment.currency = patient.currency;
             await patient.save();
         }
-        patient = await patient_1.default.findById(appointment.pId);
+        patient = await patient_1.default.findById(appointment.patientId);
         if (patient) {
             patient.billRemaining = patient?.billRemaining - appointment.fee;
             patient.appointmentCount = -1 + patient.appointmentCount;
             await patient.save();
         }
-        appointment.pId = pId;
+        appointment.patientId = patientId;
     }
     else if (typeof isFeePaid === "boolean" &&
         !isFeePaid &&
@@ -104,7 +104,7 @@ const updateAppointment = async (req, res) => {
         isFeePaid &&
         !fee &&
         !appointment.isFeePaid) {
-        const patient = await patient_1.default.findById(appointment.pId);
+        const patient = await patient_1.default.findById(appointment.patientId);
         if (patient) {
             patient.billRemaining = patient?.billRemaining - appointment.fee;
             patient.billPaid = patient?.billPaid - (fee || appointment.fee);
@@ -112,9 +112,9 @@ const updateAppointment = async (req, res) => {
             appointment.isFeePaid = true;
         }
     }
-    appointment.sTime = sTime || appointment.sTime;
-    appointment.eTime = eTime || appointment.eTime;
-    appointment.desc = desc || appointment.desc;
+    appointment.startTime = startTime || appointment.startTime;
+    appointment.endTime = endTime || appointment.endTime;
+    appointment.description = description || appointment.description;
     appointment.fee = fee || appointment.fee;
     appointment.isFeePaid = isFeePaid || false;
     appointment.date = new Date(date) || appointment.date;

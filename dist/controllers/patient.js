@@ -67,7 +67,7 @@ const deleteOnePatient = async (req, res) => {
     (0, helper_1.validateObjectId)(res, _id);
     const patient = await patient_1.default.findByIdAndDelete(_id);
     (0, helper_1.throwForNoExistence)(res, patient, "Patient Not Found", 404);
-    const delAppointments = await appointment_1.default.deleteMany({ pId: _id });
+    const delAppointments = await appointment_1.default.deleteMany({ patientId: _id });
     if (!delAppointments)
         (0, helper_1.throwException)(res);
     (0, helper_1.throwForNoExistence)(res, delAppointments);

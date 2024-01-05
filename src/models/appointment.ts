@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
-  sTime: { type: Number, required: true, min: 0, max: 23 },
-  eTime: {
+  startTime: { type: Number, required: true, min: 0, max: 23 },
+  endTime: {
     type: Number,
     required: true,
     min: 1,
     max: 24,
   },
-  desc: {
+  description: {
     type: String,
     required: true,
     trim: true,
@@ -20,7 +20,7 @@ const appointmentSchema = new mongoose.Schema({
     default: 0,
     min: 0,
   },
-  pId: {
+  patientId: {
     type: String,
     minLength: 24,
     maxLength: 24,

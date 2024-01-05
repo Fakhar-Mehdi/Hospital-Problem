@@ -58,17 +58,17 @@ const sendAndLog = (res, message) => {
 exports.sendAndLog = sendAndLog;
 const validateAppointment = (res, appointment) => {
     const appointmentSchema = (0, yup_1.object)({
-        sTime: (0, yup_1.number)().required().min(0).max(23),
-        eTime: (0, yup_1.number)().required().min(1).max(24),
-        desc: (0, yup_1.string)().required().trim().min(3).max(35),
+        startTime: (0, yup_1.number)().required().min(0).max(23),
+        endTime: (0, yup_1.number)().required().min(1).max(24),
+        description: (0, yup_1.string)().required().trim().min(3).max(35),
         fee: (0, yup_1.number)().min(0),
-        pId: (0, yup_1.string)().min(24).max(24),
+        patientId: (0, yup_1.string)().min(24).max(24),
         date: (0, yup_1.date)(),
         isFeePaid: (0, yup_1.boolean)(),
         currency: (0, yup_1.mixed)().oneOf(Object.values(enums_1.CURRENCY)),
     });
     res.status(400);
-    (0, exports.throwOnlyError)(!(appointment.sTime >= appointment.eTime), "Appointment MUST be started before its ended");
+    (0, exports.throwOnlyError)(!(appointment.startTime >= appointment.endTime), "Appointment MUST be started before its ended");
     return appointmentSchema.validate(appointment, {
         strict: true,
     });
@@ -79,10 +79,10 @@ const throwOnlyError = (element, message) => {
         throw new Error(message || data_1.SERVER.ERROR_MESSAGE);
 };
 exports.throwOnlyError = throwOnlyError;
-const getAppointmentsForPatient = async (res, pId) => {
-    const appointments = await appointment_1.default.find({ pId }).select({
+const getAppointmentsForPatient = async (res, patientId) => {
+    const appointments = await appointment_1.default.find({ patientId }).select({
         _id: 0,
-        pId: 0,
+        patientId: 0,
     });
     if ((0, lodash_1.isEmpty)(appointments))
         res.status(404).send((0, exports.logger)("No Appointments Found"));

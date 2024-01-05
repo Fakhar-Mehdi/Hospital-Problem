@@ -8,21 +8,21 @@ import Patient from "models/patient";
 
 let patient: any;
 let payload: {
-  sTime?: number;
-  eTime?: number;
-  desc?: string;
+  startTime?: number;
+  endTime?: number;
+  description?: string;
   fee?: number;
-  pId?: string;
+  patientId?: string;
   date?: string;
   isFeePaid?: boolean;
   _id?: string;
 };
 payload = {
-  sTime: 15,
-  eTime: 17,
-  desc: "Testing",
+  startTime: 15,
+  endTime: 17,
+  description: "Testing",
   fee: 1000,
-  pId: "",
+  patientId: "",
   date: "1/2/23",
   isFeePaid: false,
 };
@@ -45,7 +45,7 @@ describe("add dummy data", () => {
     });
     await patient.save();
 
-    payload.pId = patient._id;
+    payload.patientId = patient._id;
 
     let result: any = await request(await server)
       .post("/api/appointment")
