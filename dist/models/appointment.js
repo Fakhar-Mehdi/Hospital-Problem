@@ -5,14 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const appointmentSchema = new mongoose_1.default.Schema({
-    sTime: { type: Number, required: true, min: 0, max: 23 },
-    eTime: {
+    startTime: { type: Number, required: true, min: 0, max: 23 },
+    endTime: {
         type: Number,
         required: true,
         min: 1,
         max: 24,
     },
-    desc: {
+    description: {
         type: String,
         required: true,
         trim: true,
@@ -24,7 +24,7 @@ const appointmentSchema = new mongoose_1.default.Schema({
         default: 0,
         min: 0,
     },
-    pId: {
+    patientId: {
         type: String,
         minLength: 24,
         maxLength: 24,

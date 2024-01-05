@@ -9,11 +9,11 @@ const patient_1 = __importDefault(require("models/patient"));
 let patient;
 let payload;
 payload = {
-    sTime: 15,
-    eTime: 17,
-    desc: "Testing",
+    startTime: 15,
+    endTime: 17,
+    description: "Testing",
     fee: 1000,
-    pId: "",
+    patientId: "",
     date: "1/2/23",
     isFeePaid: false,
 };
@@ -33,7 +33,7 @@ describe("add dummy data", () => {
             noOfLegs: "4",
         });
         await patient.save();
-        payload.pId = patient._id;
+        payload.patientId = patient._id;
         let result = await (0, supertest_1.default)(await index_1.default)
             .post("/api/appointment")
             .send(payload);
